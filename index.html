@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>customer_support_and_ops.exe — Sharmistha Palui</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #071428;
+    --surface: #0c1e3a;
+    --border: #153050;
+    --accent: #38bdf8;
+    --accent2: #0ea5e9;
+    --text: #bdd4ee;
+    --text-dim: #4a6a8a;
+    --text-bright: #e8f4ff;
+    --green: #4ade80;
+    --tag-bg: #091c36;
+    --tag-border: #1a4060;
+    --mono: 'JetBrains Mono', 'Space Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .topbar span { animation: blink 1.2s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── HEADER ── */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .header-name {
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .header-sub {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    background: rgba(0,180,216,0.08);
+    border: 1px solid rgba(0,180,216,0.25);
+    padding: 3px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .header-meta {
+    text-align: right;
+    font-size: 10.5px;
+    color: var(--text-dim);
+    line-height: 2;
+  }
+  .header-meta a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .header-meta a:hover { text-decoration: underline; }
+  .meta-label {
+    color: var(--text-dim);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+    margin-top: 28px;
+  }
+  .section-label::before { content: '// '; color: var(--accent2); }
+
+  /* ── SUMMARY ── */
+  .summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.8;
+    border-radius: 2px;
+  }
+
+  /* ── TWO-COLUMN LAYOUT ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    margin-top: 0;
+  }
+
+  /* ── EXPERIENCE ── */
+  .exp-block {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .exp-block:last-child { border-bottom: none; }
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .exp-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.01em;
+  }
+  .exp-dates {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .exp-company {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .exp-company.amazon { color: #ff9900; }
+  .exp-company.ultra  { color: #a78bfa; }
+  .exp-company.feast  { color: #fb923c; }
+
+  .exp-bullets { list-style: none; padding: 0; }
+  .exp-bullets li {
+    padding: 4px 0 4px 20px;
+    position: relative;
+    font-size: 11.5px;
+    color: var(--text);
+    border-bottom: 1px dashed rgba(30,35,48,0.8);
+  }
+  .exp-bullets li:last-child { border-bottom: none; }
+  .exp-bullets li::before {
+    content: '//';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-size: 10px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {}
+
+  /* Skills */
+  .skill-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .skill-name { font-size: 11px; color: var(--text); }
+  .skill-pct  { font-size: 10px; color: var(--accent); min-width: 28px; text-align: right; }
+  .skill-bar-track {
+    grid-column: 1 / -1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: -6px;
+    margin-bottom: 4px;
+  }
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  /* Tools */
+  .tools-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tool-tag {
+    font-size: 10px;
+    padding: 3px 9px;
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    color: var(--accent);
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Education */
+  .edu-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 2px;
+  }
+  .edu-title { font-size: 12px; font-weight: 700; color: var(--text-bright); }
+  .edu-inst  { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .edu-dates {
+    font-size: 10px;
+    margin-top: 3px;
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 2px;
+  }
+  .edu-dates.cert    { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+  .edu-dates.ongoing { background: rgba(0,180,216,0.1); color: var(--accent); border: 1px solid rgba(0,180,216,0.2); }
+  .edu-dates.done    { background: rgba(90,100,128,0.15); color: var(--text-dim); border: 1px solid var(--border); }
+
+  /* Value Props */
+  .value-grid { display: flex; flex-direction: column; gap: 10px; }
+  .value-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    font-size: 11.5px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .value-item::before {
+    content: '▸';
+    color: var(--accent);
+    font-size: 12px;
+    margin-top: 1px;
+  }
+
+  /* Upskilling */
+  .upskill-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .upskill-tag {
+    font-size: 10px;
+    padding: 4px 10px;
+    background: rgba(0,119,182,0.1);
+    border: 1px solid rgba(0,119,182,0.3);
+    color: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* Languages */
+  .lang-list { display: flex; flex-direction: column; gap: 7px; }
+  .lang-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .lang-name { font-size: 11px; color: var(--text); }
+  .lang-level {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .lang-level.native       { background: rgba(74,222,128,0.1);  color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
+  .lang-level.fluent       { background: rgba(56,189,248,0.1);  color: var(--accent); border: 1px solid rgba(56,189,248,0.25); }
+  .lang-level.intermediate { background: rgba(251,146,60,0.1);  color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+
+  .lang-divider {
+    height: 1px;
+    background: var(--border);
+    margin-top: 16px;
+  }
+
+  /* Interests */
+  .interests {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    font-size: 11px;
+  }
+  .interests span {
+    color: var(--text);
+    background: var(--surface);
+    padding: 5px 7px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    text-align: center;
+    display: block;
+  }
+
+  /* Quote */
+  .quote-bar {
+    margin-top: 32px;
+    padding: 28px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent2);
+    border-bottom: 3px solid var(--accent2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    border-radius: 2px;
+    text-align: center;
+  }
+  .quote-mark {
+    font-size: 48px;
+    line-height: 1;
+    color: var(--accent2);
+    opacity: 0.5;
+    font-family: Georgia, serif;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+  .quote-body { flex: 1; max-width: 600px; }
+  .quote-text { font-size: 12.5px; color: var(--text); font-style: italic; line-height: 1.9; display: block; }
+  .quote-attr { font-size: 10px; color: var(--accent2); margin-top: 10px; letter-spacing: 0.1em; display: block; }
+
+  /* Achievement */
+  .achievement-box {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: linear-gradient(135deg, rgba(56,189,248,0.07), rgba(14,165,233,0.03));
+    border: 1px solid rgba(56,189,248,0.25);
+    border-left: 3px solid var(--accent);
+    border-radius: 2px;
+    padding: 14px 12px;
+    margin-top: 4px;
+  }
+  .achievement-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+    opacity: 0.85;
+  }
+  .achievement-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 0.02em;
+  }
+  .achievement-sub {
+    font-size: 9.5px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }
+  .achievement-desc {
+    font-size: 10.5px;
+    color: var(--text);
+    line-height: 1.75;
+  }
+
+  /* Cursor blinking on name */
+  .cursor {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Responsive */
+  @media (max-width: 680px) {
+    .two-col { grid-template-columns: 1fr; }
+    .header  { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">&gt; customer_support_and_ops.exe<span>_</span></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div>
+      <div class="header-name">SHARMISTHA PALUI<span class="cursor"></span></div>
+      <div class="header-sub">
+        <span class="badge">Customer Support</span>
+        <span class="badge">Support Operations</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div><span class="meta-label">loc</span>Howrah, West Bengal, India</div>
+      <div><span class="meta-label">mail</span><a href="mailto:rebapalui@gmail.com">rebapalui@gmail.com</a></div>
+      <div><span class="meta-label">web</span><a href="https://linkedin.com/in/sharmistha-palui" target="_blank">linkedin.com/in/sharmistha-palui</a></div>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <div class="section-label">INIT_SUMMARY</div>
+  <div class="summary">
+    Customer support and operations professional with 3+ years of high-volume, high-stakes experience across tech, health-tech, and food-delivery sectors. Proven at sustaining &gt;90% resolution rates, cutting handle times through process redesign, and translating customer friction into structured operational improvements. I don't just resolve tickets — I find the patterns behind them.
+  </div>
+
+  <!-- TWO COLUMN -->
+  <div class="two-col">
+
+    <!-- LEFT: EXPERIENCE + VALUE PROPS -->
+    <div>
+      <div class="section-label">EXPERIENCE_LOG</div>
+
+      <!-- Amazon -->
+      <div class="exp-block">
+        <div class="exp-header">
+          <div>
+            <div class="exp-title">SPS T4 Associate</div>
+            <div class="exp-company amazon">Amazon</div>
+          </div>
+          <div class="exp-dates">Mar 2022 – Nov 2024</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Managed 100–120 daily seller support cases across billing disputes, account reinstatements, and policy escalations — consistently maintaining ≥90% resolution rate over 2.5 years.</li>
+          <li>Redesigned personal case-handling workflow, cutting Average Handle Time by 50%; approach was formally adopted as a team-wide best practice. Received Best Achiever Award, Q2 2023.</li>
+          <li>Identified recurring seller pain points by analysing case patterns; compiled structured insight reports with root-cause breakdowns and fix recommendations shared with team leads.</li>
+          <li>Mentored new associates on case handling protocols, documentation standards, and escalation pathways — reducing onboarding ramp time for the team.</li>
+          <li>Coordinated cross-functionally with internal policy, billing, and compliance teams to resolve complex multi-department cases efficiently.</li>
+        </ul>
+      </div>
+
+      <!-- Ultrahuman -->
+      <div class="exp-block">
+        <div class="exp-header">
+          <div>
+            <div class="exp-title">User Experience Athlete</div>
+            <div class="exp-company ultra">Ultrahuman</div>
+          </div>
+          <div class="exp-dates">Jun – Jul 2025</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Handled 100–130 daily real-time chat queries for a health-tech wearable brand — covering device setup, biometric data interpretation, subscription issues, and sensitive wellness concerns.</li>
+          <li>Consistently applied empathetic, consultative communication for health-sensitive queries where tone and accuracy were equally critical.</li>
+          <li>Synthesised recurring user friction points into structured feedback reports delivered to product and marketing teams, directly influencing onboarding content revisions.</li>
+          <li>Adapted communication style dynamically across diverse user profiles — from tech-savvy early adopters to first-time wearable users.</li>
+        </ul>
+      </div>
+
+      <!-- Club Feast -->
+      <div class="exp-block">
+        <div class="exp-header">
+          <div>
+            <div class="exp-title">City Operations Analyst</div>
+            <div class="exp-company feast">Club Feast</div>
+          </div>
+          <div class="exp-dates">Dec 2024 – Jan 2025</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Monitored real-time delivery KPIs across city clusters — identified operational bottlenecks, delivery anomalies, and fulfilment gaps affecting customer satisfaction.</li>
+          <li>Coordinated with restaurant partners, delivery personnel, and logistics teams to resolve live service failures and minimise order-level complaints.</li>
+          <li>Mapped last-mile customer pain points and escalated patterns to management with data-backed recommendations, contributing to targeted retention improvements.</li>
+        </ul>
+      </div>
+
+      <!-- Value Props -->
+      <div class="section-label">VALUE_PROPS</div>
+      <div class="value-grid">
+        <div class="value-item">2.5+ years at Amazon handling 100+ cases daily at ≥90% resolution — the volume, consistency, and rigour are proven.</div>
+        <div class="value-item">Process builder by instinct — I redesigned my own workflow for a 50% efficiency gain that became the team standard.</div>
+        <div class="value-item">Cross-sector CX experience: enterprise e-commerce (Amazon), health-tech (Ultrahuman), and food delivery ops (Club Feast).</div>
+        <div class="value-item">Data-literate with an IIM-B analytics background — I bring structured thinking to customer insight, not just case resolution.</div>
+      </div>
+
+      <!-- Interests -->
+      <div class="section-label">INTERESTS_AND_AFFINITIES</div>
+      <div class="interests">
+        <span>Customer Psychology</span>
+        <span>Process Optimisation</span>
+        <span>Health &amp; Wellness Tech</span>
+        <span>Team Enablement</span>
+        <span>Behavioural Insight</span>
+        <span>Conflict Resolution</span>
+        <span>UX &amp; Product Thinking</span>
+        <span>Data Storytelling</span>
+        <span>Ops Automation</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Skills -->
+      <div class="section-label">SKILL_LEVELS</div>
+
+      <div class="skill-row">
+        <span class="skill-name">Case Resolution</span>
+        <span class="skill-pct">92%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:92%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Escalation Mgmt</span>
+        <span class="skill-pct">85%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Process Design</span>
+        <span class="skill-pct">80%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Empathic Comms</span>
+        <span class="skill-pct">88%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:88%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Data Reporting</span>
+        <span class="skill-pct">75%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:75%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Cross-func Collab</span>
+        <span class="skill-pct">82%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:82%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">VoC Analysis</span>
+        <span class="skill-pct">78%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:78%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">KPI Monitoring</span>
+        <span class="skill-pct">70%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Team Mentoring</span>
+        <span class="skill-pct">65%</span>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:65%"></div></div>
+      </div>
+
+      <!-- Tools (Intercom removed) -->
+      <div class="section-label">TOOLS_USED</div>
+      <div class="tools-grid">
+        <span class="tool-tag">Seller Central</span>
+        <span class="tool-tag">Zendesk</span>
+        <span class="tool-tag">Freshdesk</span>
+        <span class="tool-tag">Live Chat</span>
+        <span class="tool-tag">Google Sheets</span>
+        <span class="tool-tag">Slack</span>
+        <span class="tool-tag">Notion</span>
+        <span class="tool-tag">Jira (basic)</span>
+      </div>
+
+      <!-- Education -->
+      <div class="section-label">EDUCATION_LOG</div>
+
+      <div class="edu-block">
+        <div class="edu-title">Data Analytics</div>
+        <div class="edu-inst">Metvy · IIM-B Backed · Cohort 26</div>
+        <span class="edu-dates cert">Jan – Mar 2024 · Certificate</span>
+      </div>
+      <div class="edu-block">
+        <div class="edu-title">MA — Journalism &amp; Mass Comm.</div>
+        <div class="edu-inst">Chandigarh University</div>
+        <span class="edu-dates ongoing">Jun 2024 – Jul 2026 · Ongoing</span>
+      </div>
+      <div class="edu-block">
+        <div class="edu-title">CDMM — Digital Marketing</div>
+        <div class="edu-inst">Digital Vidya</div>
+        <span class="edu-dates cert">Nov 2023 – May 2025 · Certified</span>
+      </div>
+      <div class="edu-block">
+        <div class="edu-title">BA History (Honours)</div>
+        <div class="edu-inst">IGNOU</div>
+        <span class="edu-dates done">Completed</span>
+      </div>
+
+      <!-- Upskilling -->
+      <div class="section-label">CURRENTLY_UPSKILLING</div>
+      <div class="upskill-grid">
+        <span class="upskill-tag">Customer Success Strategy</span>
+        <span class="upskill-tag">CRM Advanced</span>
+        <span class="upskill-tag">CSAT &amp; NPS Frameworks</span>
+        <span class="upskill-tag">SLA Management</span>
+        <span class="upskill-tag">Ops Automation</span>
+      </div>
+
+      <!-- Languages -->
+      <div class="section-label">LANGUAGES</div>
+      <div class="lang-list">
+        <div class="lang-row">
+          <span class="lang-name">English</span>
+          <span class="lang-level fluent">Fluent</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Bengali</span>
+          <span class="lang-level native">Native</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Hindi</span>
+          <span class="lang-level intermediate">Intermediate</span>
+        </div>
+      </div>
+      <div class="lang-divider"></div>
+
+      <!-- Achievement -->
+      <div class="section-label">ACHIEVEMENT</div>
+      <div class="achievement-box">
+        <div class="achievement-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"/>
+            <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/>
+            <path d="M6 3h12v10a6 6 0 0 1-12 0V3z"/>
+            <path d="M12 19v3"/>
+            <path d="M9 22h6"/>
+          </svg>
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-title">Best Achiever Award</div>
+          <div class="achievement-sub">Q2 2023 &nbsp;·&nbsp; Amazon</div>
+          <div class="achievement-desc">Recognised for a 50% AHT reduction via personal workflow redesign — later adopted as a team-wide standard.</div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+  </div><!-- /two-col -->
+
+  <!-- QUOTE -->
+  <div class="quote-bar">
+    <span class="quote-mark">&ldquo;</span>
+    <div class="quote-body">
+      <p class="quote-text">The single biggest problem in communication is the illusion that it has taken place.</p>
+      <p class="quote-attr
